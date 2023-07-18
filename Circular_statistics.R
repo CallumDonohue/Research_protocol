@@ -10,8 +10,7 @@ myData <- read.csv('data.csv')
 
 # Removes NaN's
 sel <- !is.nan(myData$running)
-myData <- myData[sel,] 
-
+myData <- myData[sel,]
 
 #### Load packages ####
 
@@ -82,6 +81,8 @@ wat_test <- watson.williams.test(myData$running, myData$treatment)
 # if redo != 1, then the modelling is skipped (quicker) and the .RDS file is read from the last time the models were saved
 # You can change where the outputs are saved below using setwd. If you remove the setwd below, it will just do everything from the
 # current working directory, but this is not very neat. 
+
+redo = 1
 
 if (redo == 1){
   

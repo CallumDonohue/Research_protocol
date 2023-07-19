@@ -170,7 +170,7 @@ Rrho <- c()
 
 
 # Loops through and calculates the circular mean, standard deviation and mean resultant length (rho) from the running direction vector, split by each treatment you want to plot
-# Make sure that you change the varaible names "running" and "treatment" to the appropriate names for your data
+# Make sure that you change the variable names "running" and "treatment" to the appropriate names for your data
 unique_treatments <- unique(myData$treatment)
 
 for (i in 1:length(unique_treatments)){
@@ -227,7 +227,7 @@ ggplot(data = Coefs, aes(y = RMean, x = Rrho)) +
         axis.ticks.y=element_blank()) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank())+
-  # Makes some stuff greyy instead of colored
+  # Makes some stuff grey instead of colored
   scale_color_grey(start=0.6, end=0.2)+ scale_fill_grey(start=0.6, end=0.2)
 
 

@@ -10,21 +10,21 @@ myData <- read.csv('data.csv')
 
 # Removes NaN's
 sel <- !is.nan(myData$running)
-myData <- myData[sel,] 
-
+myData <- myData[sel,]
 
 #### Load packages ####
 
 # The standard circular package in R. Most tests and stuff
 library(circular)
 
+# Package for Maximum Likelihood Analysis of Circular Data. Has a lot of cool functions, but i used it to test
+# for the number of modes in my running data
 library(CircMLE)
 
 
 # To go-to plotting package in R
 library(ggplot2)
 
-library(ggridges)
 
 # Used to run mixed effect circular models. The package had some bugs when i was using it 
 # and the author advised me to install the package via github as she could quickly patch
@@ -81,6 +81,8 @@ wat_test <- watson.williams.test(myData$running, myData$treatment)
 # if redo != 1, then the modelling is skipped (quicker) and the .RDS file is read from the last time the models were saved
 # You can change where the outputs are saved below using setwd. If you remove the setwd below, it will just do everything from the
 # current working directory, but this is not very neat. 
+
+redo = 1
 
 if (redo == 1){
   
@@ -283,6 +285,20 @@ ggplot(data = mod1_coef, aes(y = mean, x = rho)) +
   scale_color_manual(values= c("grey20", "grey60", "grey80"))+
   scale_fill_manual(values = c("grey20", "grey60", "grey80"))
 
+
+
+
+## Maximum likelihood estimates of data structure ##
+# Please refer to the publication: 
+# "Bringing the analysis of animal orientation data full circle: model-based approaches with maximum likelihood"
+# The function tests your data structure against possible models of animal orientation. Tells you the best model that fits your data
+# i.e., bimodal, axial bimodal, unimodel etc... There are 10 of them
+
+circ_model = circ_mle(myData$running)
+BestMod <- circ_model$bestmodel
+
+windows()
+plot_circMLE(myData$running,circ_model,BestMod)
 
 
 

@@ -46,18 +46,17 @@ mdata <- data %>%
     mutate(dev= circular(dev, units= 'radians', modulo= '2pi'),
            mrl= circular(mrl, units= 'radians', modulo= '2pi')) %>%
     mutate(lb= avg-dev, ub= avg+dev) %>%
-    mutate(lb= ifelse(lb< 0, 0, lb), ub= ifelse(ub> 2*pi, 2*pi, ub))  # for plotting reasons only
+    mutate(lb= ifelse(lb>0, lb, 0), ub= ifelse(ub<2*pi, ub, 2*pi)) # for plotting purposes only
 
 
 ##### plot data #####
-
 # The first step plots all the running directions along the outside of the circle
-# (circle perimeter= 1) and colors the points based on treatment
-p <- ggplot(data= mdata, aes(x= mrl, y= avg)) +
-    geom_point(data= data, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pch= 16,
+# (circle perimeter= 1) and colors the points based on treatment    
+p <- ggplot(data= fmdata, aes(x= mrl, y= avg)) +
+geom_point(data= fdata, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pch= 16,
                alpha= 0.75, size= 3, position= position_jitter(width= 0.1))
 
-# then, creates a line segment that connects the centre of the circle with the mean running
+# then, creates a line segment that connects the center of the circle with the mean running
 # directions     
 p <- p+ geom_segment(aes(x= 0, y= avg, xend= mrl , yend= avg, color= protocol), linewidth= 1)
     
@@ -78,10 +77,10 @@ p <- p+ coord_polar(theta= 'y', start= rad(90), direction= 1, clip= 'off')
 p <- p+ geom_vline(xintercept = 1, color = "black", size = 0.5)
 
 # Adds the degree values you want to include around the perimeter
-p <- p+ scale_y_continuous(limits=c(0, 2*pi),
-                           breaks= c(0, 90, 180, 270),
-                           labels= c(0,90,180,270))
+p <- p+ scale_y_continuous(limits=c(0, 2*pi), breaks= c(0, 90, 180, 270),
+                               labels= c(0,90,180,270))
 
+    
 # makes the plot even more pretty
 p <- p+ theme(axis.title.y=element_blank(), axis.text.y=element_blank(), 
               axis.ticks.y=element_blank(), axis.title.x=element_blank(), 

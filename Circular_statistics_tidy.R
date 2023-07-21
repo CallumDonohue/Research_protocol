@@ -50,10 +50,16 @@ mdata <- data %>%
 
 
 ##### plot data #####
+# set color palette
+palette <- c(rgb(224, 242, 241, maxColorValue= 255), rgb(178, 223, 219, maxColorValue= 255), 
+                 rgb(128, 203, 196, maxColorValue= 255), rgb(77, 182, 172, maxColorValue= 255),
+                 rgb(38, 166, 154, maxColorValue= 255), rgb(0, 150, 136, maxColorValue= 255),
+                 rgb(0, 137, 123, maxColorValue= 255), rgb(0, 121, 107, maxColorValue= 255))
+
 # The first step plots all the running directions along the outside of the circle
 # (circle perimeter= 1) and colors the points based on treatment    
-p <- ggplot(data= fmdata, aes(x= mrl, y= avg)) +
-geom_point(data= fdata, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pch= 16,
+p <- ggplot(data= mdata, aes(x= mrl, y= avg)) +
+geom_point(data= data, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pch= 16,
                alpha= 0.75, size= 3, position= position_jitter(width= 0.1))
 
 # then, creates a line segment that connects the center of the circle with the mean running
@@ -91,5 +97,8 @@ p <- p+ facet_wrap(~protocol, ncol= 4)
 
 # remove panel labels and add a legend
 p <- p+ theme(strip.text= element_blank())
+
+# change the color palette
+p <- p+ scale_color_manual(values= palette) + scale_fill_manual(values= palette)
 
 p

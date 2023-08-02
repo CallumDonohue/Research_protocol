@@ -51,10 +51,7 @@ mdata <- data %>%
 
 ##### plot data #####
 # set color palette
-palette <- c(rgb(224, 242, 241, maxColorValue= 255), rgb(178, 223, 219, maxColorValue= 255), 
-                 rgb(128, 203, 196, maxColorValue= 255), rgb(77, 182, 172, maxColorValue= 255),
-                 rgb(38, 166, 154, maxColorValue= 255), rgb(0, 150, 136, maxColorValue= 255),
-                 rgb(0, 137, 123, maxColorValue= 255), rgb(0, 121, 107, maxColorValue= 255))
+palette <- c('#4527a0', '#283593', '#1565c0', '#0277bd', '#00838f', '#00695c', '#2e7d32','#558b2f')
 
 # The first step plots all the running directions along the outside of the circle
 # (circle perimeter= 1) and colors the points based on treatment    
@@ -102,3 +99,60 @@ p <- p+ theme(strip.text= element_blank())
 p <- p+ scale_color_manual(values= palette) + scale_fill_manual(values= palette)
 
 p
+
+
+##### for single stimulus conditions #####
+sdata <- data %>%
+    filter(protocol== 1 | protocol== 8)
+
+smdata <- mdata %>%
+    filter(protocol== 1 | protocol== 8)
+
+spalette <- c('#4527a0','#558b2f')
+
+# plot
+ggplot(data= smdata, aes(x= mrl, y= avg)) +
+    geom_point(data= sdata, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pch= 16,
+               alpha= 0.75, size= 3, position= position_jitter(width= 0.1)) +
+    geom_segment(aes(x= 0, y= avg, xend= mrl , yend= avg, color= protocol), linewidth= 1) +
+    geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= protocol), size= 1) +
+    geom_point(aes(fill = protocol),color = 'black',pch = 21,  stroke = 0.35, size = 3) +
+    theme_bw()+ theme(panel.grid.major= element_blank(), panel.grid.minor= element_blank(),
+                      legend.position= "none", text= element_text(size=14)) +
+    coord_polar(theta= 'y', start= rad(90), direction= 1, clip= 'off') +
+    geom_vline(xintercept = 1, color = "black", size = 0.5) +
+    scale_y_continuous(limits=c(0, 2*pi), breaks= c(0, 90, 180, 270),
+                       labels= c(0,90,180,270)) +
+    theme(axis.title.y=element_blank(), axis.text.y=element_blank(), 
+          axis.ticks.y=element_blank(), axis.title.x=element_blank(), 
+          axis.text.x=element_blank()) +
+    facet_wrap(~protocol, ncol= 4) +
+    theme(strip.text= element_blank()) +
+    scale_color_manual(values= spalette) + scale_fill_manual(values= spalette)
+
+##### for dual loom only #####
+ddata <- data %>%
+    filter(protocol!= 1 & protocol!= 8)
+
+dmdata <- mdata %>%
+    filter(protocol!= 1 & protocol!= 8)
+
+# plot
+ggplot(data= dmdata, aes(x= mrl, y= avg)) +
+    geom_point(data= ddata, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pch= 16,
+               alpha= 0.75, size= 3, position= position_jitter(width= 0.1)) +
+    geom_segment(aes(x= 0, y= avg, xend= mrl , yend= avg, color= protocol), linewidth= 1) +
+    geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= protocol), size= 1) +
+    geom_point(aes(fill = protocol),color = 'black',pch = 21,  stroke = 0.35, size = 3) +
+    theme_bw()+ theme(panel.grid.major= element_blank(), panel.grid.minor= element_blank(),
+                      legend.position= "none", text= element_text(size=14)) +
+    coord_polar(theta= 'y', start= rad(90), direction= 1, clip= 'off') +
+    geom_vline(xintercept = 1, color = "black", size = 0.5) +
+    scale_y_continuous(limits=c(0, 2*pi), breaks= c(0, 90, 180, 270),
+                       labels= c(0,90,180,270)) +
+    theme(axis.title.y=element_blank(), axis.text.y=element_blank(), 
+          axis.ticks.y=element_blank(), axis.title.x=element_blank(), 
+          axis.text.x=element_blank()) +
+    facet_wrap(~protocol, ncol= 3) +
+    theme(strip.text= element_blank()) +
+    scale_color_manual(values= palette[2:7]) + scale_fill_manual(values= palette[2:7])

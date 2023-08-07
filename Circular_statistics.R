@@ -129,7 +129,7 @@ if (redo == 1){
 }
 
 # The below code extracts means and variances from the model output. The current code assumes a categorical variable
-# it changes slightly if you have a continous viable. Again, i think this is explained in the publication mentioned above
+# it changes slightly if you have a continuous variable. Again, i think this is explained in the publication mentioned above
 
 
 ## Extract means and CI from the model ##

@@ -3,10 +3,12 @@
 ##### load the packages #####
 library(tidyverse)
 library(readxl)
-library(circular)
-library(CircMLE)
 library(ggridges)
+library(circular)
 library(REdaS)
+library(brms)
+library(bpnreg)
+library(loo)
 
 ##### load data #####
 # Clears work space turns figure windows off
@@ -14,7 +16,7 @@ rm(list = ls())
 graphics.off()
 
 # open data
-path <- 'C:\\data\\juan\\MEGAsync\\data\\behavioural_data\\selective_attention'
+path <- 'C:\\data\\MEGAsync\\data\\behavioural_data\\selective_attention'
 file <- 'res_sa.xlsx'
 
 data <- tibble()
@@ -64,10 +66,10 @@ geom_point(data= data, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pc
 p <- p+ geom_segment(aes(x= 0, y= avg, xend= mrl , yend= avg, color= protocol), linewidth= 1)
     
 # add the error bars
-p <- p+ geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= protocol), size= 1)
+p <- p+ geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= protocol), linewidth= 1)
 
 # show the mean running directions, colored by protocol
-p <- p+ geom_point(aes(fill = protocol),color = 'black',pch = 21,  stroke = 0.35, size = 3)
+p <- p+ geom_point(aes(fill = protocol),color = 'black',pch= 21,  stroke= 0.35, size= 3)
 
 # format the axis, legend, etc
 p <- p+ theme_bw()+ theme(panel.grid.major= element_blank(), panel.grid.minor= element_blank(),
@@ -77,7 +79,7 @@ p <- p+ theme_bw()+ theme(panel.grid.major= element_blank(), panel.grid.minor= e
 p <- p+ coord_polar(theta= 'y', start= rad(90), direction= 1, clip= 'off')
 
 # Adds a line at 1 that becomes the outside of the circle
-p <- p+ geom_vline(xintercept = 1, color = "black", size = 0.5)
+p <- p+ geom_vline(xintercept = 1, color = "black", linewidth= 0.5)
 
 # Adds the degree values you want to include around the perimeter
 p <- p+ scale_y_continuous(limits=c(0, 2*pi), breaks= c(0, 90, 180, 270),
@@ -101,7 +103,7 @@ p <- p+ scale_color_manual(values= palette) + scale_fill_manual(values= palette)
 p
 
 
-##### for single stimulus conditions #####
+##### plot for single stimulus conditions #####
 sdata <- data %>%
     filter(protocol== 1 | protocol== 8)
 
@@ -115,12 +117,12 @@ ggplot(data= smdata, aes(x= mrl, y= avg)) +
     geom_point(data= sdata, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pch= 16,
                alpha= 0.75, size= 3, position= position_jitter(width= 0.1)) +
     geom_segment(aes(x= 0, y= avg, xend= mrl , yend= avg, color= protocol), linewidth= 1) +
-    geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= protocol), size= 1) +
+    geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= protocol), linewidth= 1) +
     geom_point(aes(fill = protocol),color = 'black',pch = 21,  stroke = 0.35, size = 3) +
     theme_bw()+ theme(panel.grid.major= element_blank(), panel.grid.minor= element_blank(),
                       legend.position= "none", text= element_text(size=14)) +
     coord_polar(theta= 'y', start= rad(90), direction= 1, clip= 'off') +
-    geom_vline(xintercept = 1, color = "black", size = 0.5) +
+    geom_vline(xintercept = 1, color = "black", linewidth= 0.5) +
     scale_y_continuous(limits=c(0, 2*pi), breaks= c(0, 90, 180, 270),
                        labels= c(0,90,180,270)) +
     theme(axis.title.y=element_blank(), axis.text.y=element_blank(), 
@@ -130,7 +132,7 @@ ggplot(data= smdata, aes(x= mrl, y= avg)) +
     theme(strip.text= element_blank()) +
     scale_color_manual(values= spalette) + scale_fill_manual(values= spalette)
 
-##### for dual loom only #####
+##### plot for dual loom only #####
 ddata <- data %>%
     filter(protocol!= 1 & protocol!= 8)
 
@@ -142,12 +144,12 @@ ggplot(data= dmdata, aes(x= mrl, y= avg)) +
     geom_point(data= ddata, aes(x= 1.15, y= run_fictrac_rot_rad, color= protocol), pch= 16,
                alpha= 0.75, size= 3, position= position_jitter(width= 0.1)) +
     geom_segment(aes(x= 0, y= avg, xend= mrl , yend= avg, color= protocol), linewidth= 1) +
-    geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= protocol), size= 1) +
+    geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= protocol), linewidth= 1) +
     geom_point(aes(fill = protocol),color = 'black',pch = 21,  stroke = 0.35, size = 3) +
     theme_bw()+ theme(panel.grid.major= element_blank(), panel.grid.minor= element_blank(),
                       legend.position= "none", text= element_text(size=14)) +
     coord_polar(theta= 'y', start= rad(90), direction= 1, clip= 'off') +
-    geom_vline(xintercept = 1, color = "black", size = 0.5) +
+    geom_vline(xintercept = 1, color = "black", linewidth= 0.5) +
     scale_y_continuous(limits=c(0, 2*pi), breaks= c(0, 90, 180, 270),
                        labels= c(0,90,180,270)) +
     theme(axis.title.y=element_blank(), axis.text.y=element_blank(), 
@@ -155,4 +157,34 @@ ggplot(data= dmdata, aes(x= mrl, y= avg)) +
           axis.text.x=element_blank()) +
     facet_wrap(~protocol, ncol= 3) +
     theme(strip.text= element_blank()) +
-    scale_color_manual(values= palette[2:7]) + scale_fill_manual(values= palette[2:7])
+    scale_color_manual(values= palette[2:7]) +
+  scale_fill_manual(values= palette[2:7])
+
+##### stats for all data #####
+# Performs a Rayleigh test of uniformity, assessing the significance of the mean
+# resultant length
+ray_test <- rayleigh.test(data$run_fictrac_rot_rad)
+# Performs the Watson-Wheeler test (or Mardia-Watson-Wheeler, or uniform score)
+# for homogeneity on two or more samples of circular data. Non-parametric
+wheel_test <- watson.wheeler.test(data$run_fictrac_rot_rad, data$protocol)
+# Performs the Watson-Williams test for homogeneity of means between several
+# samples of circular data. Parametric and so has some assumptions. 
+# Check these out in the package docs. 
+wat_test <- watson.williams.test(data$run_fictrac_rot_rad, data$protocol)
+
+# keep only those columns of interest for bayesian analysis
+bdata <- subset(data, select= c(crab, protocol, run_fictrac_rot_rad))
+  
+
+mod0 <- bpnr(pred.I= run_fictrac_rot_rad~ (1|crab), data= bdata,
+             its= 10000, burn= 1000, n.lag= 3, seed= 101)
+mod1 <- bpnr(pred.I= run_fictrac_rot_rad~ protocol+ (1|crab), data= bdata,
+             its= 10000, burn= 1000, n.lag= 3, seed= 102)
+
+windows()
+traceplot(mod0, parameter = 'beta1')
+traceplot(mod1, parameter = 'beta2')
+# trace plots look consistently variable. Bayesian stats are ok
+# extract model coefficients
+mod1_coef <- coef_circ(mod1, type = "categorical", units = "radians")
+mod1_coef <- as.data.frame(mod1_coef$Means)

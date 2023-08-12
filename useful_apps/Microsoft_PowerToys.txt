@@ -2,7 +2,12 @@ Microsoft PowerToys: Utilities to customize Windows
 ====================================================
 
 Microsoft PowerToys is a set of utilities for power users to tune and streamline 
-their Windows experience for greater productivity.
+their Windows experience for greater productivity. 
+
+It basically installs a bunch of extra utilities on a windows machine to increase functionality so that
+you do not need to download a bunch of applications. 
+See below, but for example, it downloads a utility which shows the hexcode for any colour you move 
+the mouse over, a way to digitise text from images and more effective ways to manipulate/pin windows
 
 Go to the below link to view the utilites and instructions for download (it is worth it):
 https://learn.microsoft.com/en-us/windows/powertoys/

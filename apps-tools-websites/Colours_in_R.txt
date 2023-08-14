@@ -1,0 +1,10 @@
+Colors in R
+=====================
+
+This is a link to a website that provides a full list of the colours provided by tge R colors() function.
+I like this website because it allows you to click on a colour to copy the HEX reference and you can also
+convert the HEX values to RGB with an easy to use converter. This is super handy if you need to jump
+between MATLAB RGB values and R HEX reference. 
+
+https://r-charts.com/colors/
+

@@ -39,15 +39,15 @@ data <- data %>%
     mutate(run_digi_rot_rad= circular(run_digi_rot_rad, units= 'radians', modulo= '2pi'),
            run_fictrac_rot_rad= circular(run_fictrac_rot_rad, units= 'radians', modulo= '2pi'))
 
-# # make a new data frame with the mean, sd and mean resultant length (rho) for each protocol
-# mdata <- data %>%
-#     group_by(protocol) %>%
-#     summarise(avg= mean.circular(run_fictrac_rot_rad), dev= sd.circular(run_fictrac_rot_rad),
-#               mrl= rho.circular(run_fictrac_rot_rad)) %>%
-#     mutate(dev= circular(dev, units= 'radians', modulo= '2pi'),
-#            mrl= circular(mrl, units= 'radians', modulo= '2pi')) %>%
-#     mutate(lb= avg-dev, ub= avg+dev) #%>%
-#   #  mutate(lb= ifelse(lb>0, lb, 0), ub= ifelse(ub<2*pi, ub, 2*pi)) # for plotting purposes only
+# make a new data frame with the mean, sd and mean resultant length (rho) for each protocol
+mdata <- data %>%
+    group_by(protocol) %>%
+    summarise(avg= mean.circular(run_fictrac_rot_rad), dev= sd.circular(run_fictrac_rot_rad),
+              mrl= rho.circular(run_fictrac_rot_rad)) %>%
+    mutate(dev= circular(dev, units= 'radians', modulo= '2pi'),
+           mrl= circular(mrl, units= 'radians', modulo= '2pi')) %>%
+    mutate(lb= avg-dev, ub= avg+dev) #%>%
+  #  mutate(lb= ifelse(lb>0, lb, 0), ub= ifelse(ub<2*pi, ub, 2*pi)) # for plotting purposes only
 # 
 # 
 # ##### plot data #####
@@ -150,8 +150,9 @@ run_single <- bsdata %>%
 ddata <- data %>%
     filter(protocol!= 1 & protocol!= 8)
 
-# dmdata <- mdata %>%
-#     filter(protocol!= 1 & protocol!= 8)
+dmdata <- mdata %>%
+    filter(protocol!= 1 & protocol!= 8) %>%
+  mutate(avg_deg= rad2deg(avg), dev_deg=rad2deg(dev))
 
 # plot
 ggplot(data= dmdata, aes(x= mrl, y= avg)) +
@@ -191,14 +192,14 @@ run_double <- bddata %>%
 # ##### stats for all data #####
 # # Performs a Rayleigh test of uniformity, assessing the significance of the mean
 # # resultant length
-# ray_test <- rayleigh.test(data$run_fictrac_rot_rad)
+ ray_test <- rayleigh.test(ddata$run_fictrac_rot_rad)
 # # Performs the Watson-Wheeler test (or Mardia-Watson-Wheeler, or uniform score)
 # # for homogeneity on two or more samples of circular data. Non-parametric
 # wheel_test <- watson.wheeler.test(data$run_fictrac_rot_rad, data$protocol)
 # # Performs the Watson-Williams test for homogeneity of means between several
 # # samples of circular data. Parametric and so has some assumptions. 
 # # Check these out in the package docs. 
-# wat_test <- watson.williams.test(data$run_fictrac_rot_rad, data$protocol)
+# wat_test <- watson.williams.test(ddata$run_fictrac_rot_rad, ddata$protocol)
 # 
 # # mod0 <- bpnr(pred.I= run_fictrac_rot_rad~ (1|crab), data= bdata,
 # #              its= 10000, burn= 1000, n.lag= 3, seed= 101)

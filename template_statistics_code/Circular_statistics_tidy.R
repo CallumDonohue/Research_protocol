@@ -119,10 +119,10 @@ fig2c <- ggplot(data= smdata, aes(x= mrl, y= avg)) +
               alpha= 0.75, size= 1, position= position_jitter(width= 0.1)) +
     geom_segment(aes(x= 0, y= avg, xend= mrl , yend= avg, color= int_contrast), linewidth= 1) +
     geom_linerange(aes(x= mrl, ymin= lb, ymax= ub, color= int_contrast), linewidth= 1) +
-    geom_point(aes(fill = int_contrast),color = 'black',pch = 21,  stroke = 0.35, size = 2) +
+    geom_point(aes(fill = int_contrast), color = 'black',pch = 21,  stroke = 0.35, size = 2) +
     theme_bw()+
     theme(panel.grid.major= element_blank(), panel.grid.minor= element_blank(),
-                       legend.position= "bottom", text= element_text(size= 8)) +
+                       legend.position= "none", text= element_text(size= 8)) +
      coord_polar(theta= 'y', start= rad(90), direction= 1, clip= 'off') +
      geom_vline(xintercept = 1, color = "black", linewidth= 0.5) +
      scale_y_continuous(limits=c(0, 2*pi), breaks= c(0, 90, 180, 270),
@@ -196,7 +196,7 @@ fig3c <- ggplot(data= dmdata, aes(x= mrl, y= avg)) +
     geom_point(aes(fill = int_contrast),color = 'black',pch = 21,  stroke = 0.35, size = 2) +
     theme_bw()+
     theme(panel.grid.major= element_blank(), panel.grid.minor= element_blank(),
-          legend.position= "right", text= element_text(size= 8)) +
+          legend.position= "none", text= element_text(size= 8)) +
     coord_polar(theta= 'y', start= rad(90), direction= 1, clip= 'off') +
     geom_vline(xintercept = 1, color = "black", linewidth= 0.5) +
     scale_y_continuous(limits=c(0, 2*pi), breaks= c(0, 90, 180, 270),
